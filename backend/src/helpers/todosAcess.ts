@@ -24,4 +24,22 @@ export class TodosAccess {
         })
         return todoItem
     }
+
+    async deleteTodo(userId: string, todoId: string): Promise<string> {
+
+        await this.docClient.delete({
+            TableName: this.todosTable,
+            Key: {
+                userId: userId,
+                todoId: todoId
+            }
+        })
+        
+        return JSON.stringify ({
+            userId: userId,
+            todoId: todoId
+        })
+    }
+
+
 }
