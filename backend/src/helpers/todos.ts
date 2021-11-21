@@ -33,3 +33,7 @@ export async function deleteTodo(todoId: string, userId: string): Promise<string
     return await todosAcess.deleteTodo(userId, todoId)
 }
 
+export async function createAttachmentPresignedUrl(todoId) {
+    
+    return await todosAcess.createAttachmentPresignedUrl(todoId)
+}
