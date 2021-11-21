@@ -21,7 +21,8 @@ export class TodosAccess {
         private readonly docClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),
         private readonly todosTable = process.env.TODOS_TABLE,
         private readonly bucketName = process.env.ATTACHMENT_S3_BUCKET,
-        private readonly urlExpiration = process.env.SIGNED_URL_EXPIRATION) {
+        private readonly urlExpiration = process.env.SIGNED_URL_EXPIRATION,
+        private readonly todoCreatedAtIndex = process.env.TODOS_CREATED_AT_INDEX) {
     }
 
     async createTodo(todoItem: TodoItem): Promise<TodoItem> {
@@ -56,5 +57,18 @@ export class TodosAccess {
           })
     }
 
+    async getTodos(userId): Promise<TodoItem[]> {
+        const result = await this.docClient.query({
+            TableName: this.todosTable,
+            IndexName: this.todoCreatedAtIndex,
+            KeyConditionExpression: 'userId = :userId',
+            ExpressionAttributeValues: {
+                ':userId': userId
+            },
+            ScanIndexForward: false
+        }).promise()
 
+        const items = result.Items
+        return items as TodoItem[]
+    }
 }
