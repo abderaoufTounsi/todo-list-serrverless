@@ -2,7 +2,7 @@ import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import * as middy from 'middy'
-import { cors } from 'middy/middlewares'
+import { cors, httpErrorHandler } from 'middy/middlewares'
 
 import { getTodos as getTodosForUser } from '../../helpers/todos'
 import { getUserId } from '../utils';
@@ -11,9 +11,10 @@ import { getUserId } from '../utils';
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     // Write your code here
-    const userId = getUserId(event)
+    console.log('Processing event: ', event)
 
-    const todos = getTodosForUser(userId)
+    const userId = getUserId(event)
+    const todos = await getTodosForUser(userId)
 
     return {
       statusCode: 200,
@@ -26,8 +27,10 @@ export const handler = middy(
     }
   }
 )
-handler.use(
-  cors({
-    credentials: true
-  })
-)
+handler
+  .use(httpErrorHandler())
+  .use(
+    cors({
+      credentials: true
+    })
+  )
