@@ -9,6 +9,8 @@ import * as uuid from 'uuid'
 
 // TODO: Implement businessLogic
 
+const bucketName = process.env.ATTACHMENT_S3_BUCKET
+
 const todosAcess = new TodosAccess()
 
 export async function createTodo(
@@ -24,7 +26,8 @@ export async function createTodo(
         todoId: todoId,
         createdAt: createdAt,
         done: false,
-        ...createTodoRequest
+        ...createTodoRequest,
+        attachmentUrl: `https://${bucketName}.s3.amazonaws.com/${todoId}`
     })
 }
 
