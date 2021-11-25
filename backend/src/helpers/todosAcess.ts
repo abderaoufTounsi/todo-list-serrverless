@@ -42,7 +42,7 @@ export class TodosAccess {
                 userId: userId,
                 todoId: todoId
             }
-        })
+        }).promise()
         
         return JSON.stringify ({
             userId: userId,
